@@ -128,7 +128,7 @@ Unicode is a universal character standard designed to represent characters from 
 - UTF-16 (Variable-length, 2 or 4 bytes per character)
   - Used in Windows, Java, ans some file formats.
 - UTF-32 (Fixed-length, 4 bytes per character)
-  - Uses more memory but provides direct indexing of characters.    
+  - Uses more memory but provides direct indexing of characters.
 
 ## 7. What are unit tests for?
 
