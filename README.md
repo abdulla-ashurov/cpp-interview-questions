@@ -561,6 +561,10 @@ Types of Compiler Optimizations:
 
   - The compiler assigns variables to machine registers to improve access speed. Using registers instead of memory can significantly reduce the time needed for data retrieval.
 
+Levels of Optimization
+
+
+
 
 ### 8. How to protect a header from being included again?
 
