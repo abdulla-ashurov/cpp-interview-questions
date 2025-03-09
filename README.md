@@ -563,15 +563,77 @@ Types of Compiler Optimizations:
 
 Levels of Optimization
 
-
-
+- Level O (No Optimization):
+  - This is default level where no optimizations are applied. This produces faster complation but results is less optimized code.
+- Level 1 (Basic Optimization):
+  - The compiler performs simple optimizations like constant folding, inlining, and dead code elimination.
+- Level 2 (More Aggressive Optimization):
+  - The compiler applies more advanced optimizations such as loop unrolling, stronger inlining, and instruction scheduling.
+- Level 3 (Maximized Optimization):
+  - The compiler applies the most aggressive optimizations available, including those that might significantly increase the size of the code. This level aims for the best performance at the cost of longer compile times.
+- Profile-Guided Optimization (PGO):
+  - The compiler collects runtime data and uses it to optimize the code based on how it is executed in real-world scenarios.
 
 ### 8. How to protect a header from being included again?
 
+A traditional way to protect a header file from multiple inclusions is by using preprocessor directives:
+
+```cpp
+#ifndef HEADER_NAME_H  // Check if HEADER_NAME_H is not defined
+#define HEADER_NAME_H  // Define HEADER_NAME_H
+
+// Header file content here
+
+#endif  // End of the conditional inclusion
+```
+
+Pros:
+  
+- Works in all C++ compilers
+- Prevents multiple inclusions of the same file
+
+Cons:
+
+- Does not prevent cyclic dependencies (when two headers include each other)
+
+How to Avoid Cyclic Dependencies
+
+Cyclic dependencies happen when two or more headers include each other, causing an infinite inclusio loop.
+
+- Forward Declarations
+  - Instead of including a full header, declare the class in the header and include the full header in the `.cpp` file.
+- Use `#include` Only When Necessary
+  - Include a header only in the `.cpp` file if the header is not required in the `.h` file.
+
 ### 9. What are compilation flags?
 
-### 10. How to protect a header from being included again?
+Compilation flags are options passed to the compiler to control how a program is compiled and optimized. These flags can enable debugging, optimizations, warnings, and other behaviours.
+
+Common Compilation Flags:
+
+- Optimization Flags
+- Debugging Flags
+- Warning and Error Flags
+- Standard Version Flags
+- Predprocessor Flags
+- Linking and Library Flags
+- Output File Flags
 
 ### 11. What does the include directive do?
 
+The `#include` directive tells the preprocessor to include the contents of another file into the current file before compilation. This is typically used to include header files (`.h` or `.hpp`) that contain function declarations, class definitions, macros, or constants.
+
+How it Works:
+
+- The preprocessor replaces the #include directive with the full content of the specified file before the actual compilation starts.
+- This allows different files to share common definitions without rewriting code.
+
 ### 12. How do macros work?
+
+A macro is a predprocessor directive that defines a name for a constant value, function-like expression, or block of code. When a macro is used, the preprocessor replaces all occurrences of the macro with its defined value before compilation begins (at the preprocessing stage).
+
+How Macros Work:
+
+- Macros are processed at he preprocessing stage (before compilation).
+- They replace occurrences of the macro name with actual value or expression.
+- They do not perform type checking, unlike functions.
