@@ -864,4 +864,196 @@ Key Features of a Union:
 - Memory Efficiency
   - Unions help conserve memory when you need to store different types of data but do not need to use them simultaneously.
 
+## C++/OOP
 
+### 1. What is a class?
+
+A class is a user-defined data type in C++ that encapsulates data members (variables) and member functions (methods) into a single unit. It provides absraction and encapsulation, allowing for modular and structured programming.
+
+By default, all members of a class are `private`, meaning they are inaccessible from outside the class unless explicity specified as `public` or `protected`.
+
+### 2. What is encapsulation? How is it implemented in C++? What is the difference between private/protected/public and where are they used?
+
+Encapsulation is one of the fundamental principles of OOP. It refers to bundling data (variables) and methods (functions) that operate on the data into a single unit (class) and restricing direct access to some of the object's details. This helps in hiding implementation details and protecting data from unintended modification.
+
+Encapsulation in C++ is implemented using access specifiers:
+
+- `private` - members are only accessible within the same class.
+- `protected` - members are accessible within the same class and derived (child) classes.
+- `public` - members are accessible from outside the class.
+
+### 3. What are the built-in types in C++?
+
+Built-in types in C++ are fundamental data types provided by the language to represent various kinds of values such as integers, floating-point numbers, characters, and Boolean values.
+
+### 4. What is an enum?
+
+An enum (short for enumeration) is a user-defined type in C++ that represents a set of named integral constants. It helps make code more readable and maintainable by using meaningful names instead of raw numeric values.
+
+- Unscoped Enum (C++98/C++03):
+  - Defined using `enum` keyword
+  - The underlying type is usually `int`.
+  - Enum values are accessible without a scope.
+  - Implicit conversion to integers is allowed.
+
+  ```cpp
+  #include <iostream>
+  using namespace std;
+
+  enum Color { RED, GREEN, BLUE };  // RED = 0, GREEN = 1, BLUE = 2
+
+  int main() {
+      Color c = GREEN;
+      cout << "Color value: " << c << endl;  // Outputs: 1
+      return 0;
+  }
+  ```
+
+- Scoped Enum (C++11 and later)
+  - Defining using `enum class`
+  - Strongly typed (no implicit conversion to `int`)
+  - Requires scope resolution (`EnumName::Value`)
+  - More type-safe than unscoped enums.
+
+  ```cpp
+  enum class TrafficLight { RED, YELLOW, GREEN };
+
+  int main() {
+      TrafficLight t = TrafficLight::GREEN;
+      // cout << t;  Error: No implicit conversion to int
+  }
+
+  ```
+
+  Key Points:
+
+  - Enums improve readability and code maintainability
+  - Scoped enums prevent accidental conversions to integers
+  - You can specify an underlying type using `:type` (e.g., `enum class Color : uint8_t`).
+
+### 5. What is the relationship between a class and an object?
+
+A class is a blueprint or template for creating objects. It defines the data members (variables) and member functions (methods) that describes the behavior of objects.
+
+An object is an instance of a class, meaning it is a real-word entity that holds actual values based on the class definition.
+
+### 6. What is the difference between a struct and a class?
+
+- The main difference is default access specifiers
+  - In a struct, members are public by default.
+  - In a class, members are private by default.
+- The default inheritance mode also differs:
+  - A struct inherits publicly (public inheritance by default).
+  - A class inherits privately (private inheritance by default).
+
+### 7. What are the standard class methods for a class?
+
+### 8. What is an abstract class and what is it for?
+
+### 9. How much memory does an object of an empty class A{}; take up?
+
+### 10. What happens to a function if you add the static keyword to it? In the context of a class member? In the context of a class method?
+
+### 11. What are the features of static class fields?
+
+### 12. What is the feature of constant class member methods?
+
+### 13. How to change a class field in a constant class method?
+
+### 14. What methods can be called from constant objects?
+
+### 15. What is a heap and a stack? Difference, operating principle
+
+### 16. What is the difference between a pointer and a reference?
+
+### 17. What is a function pointer for? How to declare it?
+
+### 18. What happens if you forgot to call delete? When will this memory be freed?
+
+### 19. What is a smart pointer? What smart pointers are there in the standard library?
+
+### 20. How does std::unique_ptr work?
+
+### 21. How does std::shared_ptr work?
+
+### 22. How does std::weak_ptr work?
+
+### 23. Explain the constancy of a variable, reference, pointer. What is a constant pointer and a pointer to a constant? The size of a pointer in memory?
+
+### 24. Explain the passing of arguments by value, by reference, and by pointer
+
+### 25. Explain the order of evalution of function arguments?
+
+### 26. WHat happens if you return a reference to a temporary object?
+
+### 27. What is function overloading? Types of overloading
+
+### 28. What is explicit and implicit type casting in C++? Explain the explicit type casting functions in C++
+
+### 29. What is variable initialization in if statement?
+
+### 30. What is lazy evaluatin C++?
+
+### 31. Explain for and range-for loops
+
+### 32. What does the auto keyword do? auto definition of return type, function arguments?
+
+### 33. What is the difference between delete and delete[]? What happens if you can delete on an object created via new[]?
+
+### 34. Error handling in C++. What constructs are used when handling expections?
+
+### 35. Is it possible to throw an exception from a constructor? What fields will be constructed, what fields will be destroyed?
+
+### 36. What is a memory leak?
+
+### 37. Is it possible to throw an exception from a destructor?
+
+### 38. How to catch division by 0 in C++?
+
+### 39. How do constant methods work?
+
+### 40. What is a lambda function in C++? How to access variables in the outer scope?
+
+### 41. What is namespace, anonymous namespace used for?
+
+### 42. How to call an object from nested namespace?
+
+### 43. How do inline function work? Can such a function be recursive?
+
+### 44. What is polymorphism?
+
+### 45. What is inheritance userd for?
+
+### 46. What are types of inheritance?
+
+### 47. How can you solve the diamond inheritance problem without using virtual inheritance?
+
+### 48. What happens if you pass a child class by value to function that takes a base class?
+
+### 49. What happens if you inherit from a base class that does not have virtual constructor?
+
+### 50. What happens if you call overridden virtual function from constructor? Can a constructor be virtual?
+
+### 51. Can a pure virtual function have an implementation? What happens if you call a pure virtual function from a constructor?
+
+### 52. What methods are generated for a class by default? In what case will such methods not be generated? How can I force the compiler to add/remove these methods?
+
+### 53. How can I prevent a class from being inherited?
+
+### 54. What is the order of class construction and destruction in the hierarchu? The order of class field initialization?
+
+### 55. What are the ways to initialize class fields?
+
+### 56. Can a destructor be virtual?
+
+### 57. What does the virtual keyword do?
+
+### 58. What is a virtual destructor used for?
+
+### 59. What is deep copying?
+
+### 60. What are virtual functions and why are they needed?
+
+### 61. How to protect an object from being copied?
+
+### 62. What is move semantics?
