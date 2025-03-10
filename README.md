@@ -1056,66 +1056,419 @@ Stack is a region of memory used for storing local variables, function parameter
 
 ### 30. What is lazy evaluatin C++?
 
-### 31. Explain for and range-for loops
+Lazy evaluation in C++ is a technique where an expression or computation is delayed until its result is actually needed, rather than being computed immediately. This can improve performance by avoiding unnecessary calculations.
 
-### 32. What does the auto keyword do? auto definition of return type, function arguments?
+Examples of Lazy Evalution in C++:
+
+- Short-Circuit Evalution in Logical Operators (`&&` and `||`):
+  - The second operand is only evaluated if necessary:
+
+  ```cpp
+  bool func() {
+    std::cout << "Function evaluated\n";
+    return true;
+  }
+
+  int main() {
+      bool result = false && func(); // `func()` is NOT called because `false && anything` is always false
+      return 0;
+  }
+  ```
+
+- Lazy Evaluation in Ranges (C++20):
+  - The `views::transform` in the ranges library applies a transformation only when elements are accessed.
+
+  ```cpp
+  #include <iostream>
+  #include <ranges>
+  #include <vector>
+
+  int main() {
+      std::vector<int> nums = {1, 2, 3, 4, 5};
+
+      auto lazyDoubled = nums | std::views::transform([](int x) {
+          std::cout << "Doubling " << x << std::endl;
+          return x * 2;
+      });
+
+      for (int num : lazyDoubled) {
+          std::cout << num << " ";
+      }
+
+      return 0;
+  }
+  ```
+
+- Lazy Initialization (Singleton Pattern):
+  - The object is only created when it is first needed:
+
+  ```cpp
+  class Singleton {
+  public:
+      static Singleton& getInstance() {
+          static Singleton instance;  // Created only when first called
+          return instance;
+      }
+  private:
+      Singleton() {}  // Private constructor
+  };
+  ```
+
+### 31. What does the auto keyword do? auto definition of return type, function arguments?
+
+The `auto` keyword automatically deduces the type of a variable or function return type at compile time. It helps reduce redundancy and improves readability.
+
+- `auto` for Variable Type Deduction
+  - Instead of explicitly defining a variable's type, `auto` allows the compiler to infer it:
+
+  ```cpp
+  #include <iostream>
+
+  int main() {
+      auto x = 10;        // int
+      auto y = 3.14;      // double
+      auto str = "Hello"; // const char*
+
+      std::cout << x << " " << y << " " << str << std::endl;
+
+      return 0;
+  }
+  ```
+
+- `auto` in Function Return Type (C++ 11 and later)
+  - The `auto` keyword can be used for return type deduction in functions:
+
+  ```cpp
+  auto add(int a, int b) {
+    return a + b;  // Compiler deduces return type as int
+  }
+
+  int main() {
+      std::cout << add(5, 3) << std::endl; // Output: 8
+      return 0;
+  }
+  ```
+
+- `auto` with `decltype` for Explicit Return Types
+  - If the return type depends on complex expressions, use `decltype`:
+
+  ```cpp
+  #include <iostream>
+
+  template <typename T1, typename T2>
+  auto multiply(T1 a, T2 b) -> decltype(a * b) {
+      return a * b; // Ensures correct return type
+  }
+
+  int main() {
+      std::cout << multiply(3, 4.5) << std::endl; // Output: 13.5
+      return 0;
+  }
+  ```
+
+- `auto` in Function Arguments
+  - `auto` cannot be used for function paremeters directly (expect in lambdas).
+
+  ```cpp
+  void func(auto x, auto y) { // ERROR: auto not allowed here
+    std::cout << x + y;
+  }
+  ```
+
+  - Correct way (Use Templates instead):
+
+  ```cpp
+  template <typename T, typename U>
+  void func(T x, U y) {
+      std::cout << x + y;
+  }
+  ```
+
+  - However, `auto` works in lambda expressions:
+
+  ```cpp
+  auto lambda = [](auto x, auto y) { return x + y; };
+  std::cout << lambda(3, 4.5);  // Output: 7.5
+  ```
 
 ### 33. What is the difference between delete and delete[]? What happens if you can delete on an object created via new[]?
 
+- `delete` vs `delete[]`
+  - `delete` is used to free memeory allocated for a signle object using `new`.
+  - `delete[]` is used to free memory allocated for an array of objects using `new[]`
+- What happens if you use `delete` instead of `delete[]`?
+  - If you use delete on array allocated with `new[]`, only the first element will be properly deleted, while the rest of the array may lead to memory leaks or undefined behaviour.
+  - If you use `delete[]` on a single object allocated with new, the behavior is undefined. It may cause crashes, memory corruption, or unexpected behavior depending on the compiler and system.
+
 ### 34. Error handling in C++. What constructs are used when handling expections?
+
+In C++, expeption handling is done using the `try-cathc` construct along with the `throw` keyword.
+
+Basic Syntax
+
+```cpp
+try {
+    // Code that might throw an exception
+    throw std::runtime_error("An error occurred");
+} 
+catch (const std::exception& e) {
+    std::cout << "Exception caught: " << e.what() << std::endl;
+}
+```
+
+Example: Handling Different Types of Exceptions
+
+```cpp
+#include <iostream>
+#include <stdexcept>
+
+void testFunction(int value) {
+    if (value < 0) 
+        throw std::invalid_argument("Negative value is not allowed");
+    if (value == 0)
+        throw "Value cannot be zero"; // Throwing a string
+}
+
+int main() {
+    try {
+        testFunction(0);
+    }
+    catch (const std::invalid_argument& e) {
+        std::cout << "Caught std::invalid_argument: " << e.what() << std::endl;
+    }
+    catch (const char* msg) {
+        std::cout << "Caught exception: " << msg << std::endl;
+    }
+    catch (...) { 
+        std::cout << "Caught an unknown exception" << std::endl;
+    }
+    return 0;
+}
+```
+
+Exception Handling Best Practices
+
+- Use `std::exception` hierarchy for standard expections (`std::runtime_error`, `std::logic_error`, etc)
+- Catch expections by reference (`const std::exception &e`) to avoid slicing.
+- Avoid throwing raw pointer or primitive types (`throw "error"`) use `std::runtime_error("error")` instead.
+- Use `noexcept` for functions that don't throw exceptions to optimze performance.
 
 ### 35. Is it possible to throw an exception from a constructor? What fields will be constructed, what fields will be destroyed?
 
+Yes, it is possible to throw an exception from a constructor. However, if an exception is throwm before the object is fully constructed, the object will not be created, and destructors will not be called for that object.
+
 ### 36. What is a memory leak?
+
+A memory leak occurs when dynamically allocated memory (using `new`, `malloc`, etc.) is not properly deallocated (`delete`, `free`). As a result, the memory remains occupied but inaccessible, leading to increased memory usage and potential crashes.
 
 ### 37. Is it possible to throw an exception from a destructor?
 
-### 38. How to catch division by 0 in C++?
+Yes, it is possible to throw an exception from a destructor, but it is highly discouraged because it can lead to program termination due to double exception.
 
-### 39. How do constant methods work?
+If necessary, catch and handle them inside the destructor.
 
-### 40. What is a lambda function in C++? How to access variables in the outer scope?
+### 38. What is a lambda function in C++? How to access variables in the outer scope?
+
+A lambda function in C++ is an anonymous function (i.e., without name) that can be defined inline inside another function. It is often used for short, one-time operations, especially in STL algorithms or multithreading.
+
+Syntax of a Lambda Function
+
+```cpp
+[ capture_list ] ( parameters ) -> return_type {
+    function_body
+};
+```
+
+- `capture_list` - specifies which outer-scope variables are captured.
+- `parameters` - arguments like in a normal function
+- `return_type` (optional) - specifies the return type
+- `function_body` - contains the function logic.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    auto add = [](int a, int b) {
+        return a + b;
+    };
+
+    cout << "Sum: " << add(5, 10) << endl;  // Output: Sum: 15
+}
+```
+
+Capturing Outer Scope Variables
+
+Lambda functions can access variables from the surrounding scope using capture lists.
+
+Capture by Value (`[=]` or `[var]`)
+
+The lambda gets a copy of the variable (modifications inside lambda won't affect the original variable)
+
+```cpp
+int x = 10;
+auto lambda = [x]() { cout << x << endl; };  // x is captured by value
+lambda();
+```
+
+Capture by Reference (`[&]` or `[&var]`)
+
+The lambda modifies the original variable
+
+```cpp
+int x = 10;
+auto lambda = [&x]() { x++; };  // Capture by reference
+lambda();
+cout << x;  // Output: 11 (x is modified)
+```
+
+Capture Everything (`[=]` or `[&]`)
+
+- `[=]` - Captures all outer variables by value
+- `[&]` - Captures all outer variables by reference
+
+```cpp
+int a = 5, b = 10;
+
+auto lambda1 = [=]() { cout << a + b << endl; };  // Captures both a and b by value
+auto lambda2 = [&]() { b *= 2; };  // Captures both a and b by reference
+
+lambda1();  // Output: 15
+lambda2();  
+cout << b;  // Output: 20 (b is modified)
+```
+
+Using `mutable` in a Lambda
+
+By default, lambdas capture by value as `const`, so modifying variables inside is not allowed. Use `mutable` to allow modifications inside the lambda.
+
+```cpp
+int x = 10;
+auto lambda = [x]() mutable { x++; cout << x; };  // Modifies captured copy of x
+lambda();  // Output: 11
+cout << x;  // Output: 10 (original x is unchanged)
+```
+
+Returning a Value Explicitly
+
+```cpp
+auto square = [](int x) -> int {
+    return x * x;
+};
+
+cout << square(4);  // Output: 16
+```
 
 ### 41. What is namespace, anonymous namespace used for?
 
+A namespace in C++ is used to group related code elements (like variables, function and classes) under a unique name to avoid name conflicts in large projects.
+
+Why Use a Namespace?
+
+- Prevent name conflicts in large codebases.
+- Organizes code logically
+- Enables better code modularity.
+
+An anonymous namespace is a namespace without a name. It makes all the declarations inside it local to the translation unit (i.e., the current .cpp file).
+
+Why Use an Anonymous Namespace?
+
+- Hides functions/variables from other files
+- Prevents name conflicts in different files
+- Works as an alternative to `static` for file-local scope.
+
 ### 42. How to call an object from nested namespace?
+
+When working with nested namespaces, you need to use the fully qualified name (i.e., include all levels of the namespace) to access objects inside them.
 
 ### 43. How do inline function work? Can such a function be recursive?
 
+An inline function in C++ is a function that suggests the compiler to replace its function call with the actual function body at compile time. This reduces function call overhead and can improve performance, especially for small functions.
+
+Technically, a recursive function can be marked as inline, but it will not actually be inlined by the compiler because recursion requires multiple function calls.
+
 ### 44. What is polymorphism?
 
-### 45. What is inheritance userd for?
+Polymorphism in C++ allows a function or method to have different behaviours depending on the object that is calling it. This enables dynamic method resolution at runtime.
+
+Types of Polymorphism in C++
+
+- Compile-Time (Static) Polymorphism
+  - Achieved through function overloading and operator overloading
+  - Resolved at compile time
+- Run-Time (Dynamic) Polymorphism
+  - Achieved using virtual functions and inheritance
+  - Resolved at runtime using vtabel (virtual table)
+
+### 45. What is inheritance used for?
+
+Inheritance in C++ allows a child (derived) class to acquire the properties and behaviors of a parent (base) class. It is a fundamental concept of Object-Oriented Programming (OOP) used for code reusability, extensibility, and hierarchy modeling.
 
 ### 46. What are types of inheritance?
 
+C++ supports single and multiple types of inheritance to define relationships between classes.
+
 ### 47. How can you solve the diamond inheritance problem without using virtual inheritance?
+
+- Manually Disambiguate Calls (Using Scope Resolution Operator `::`)
+- Use Composition
 
 ### 48. What happens if you pass a child class by value to function that takes a base class?
 
-### 49. What happens if you inherit from a base class that does not have virtual constructor?
+When you pass a child class object by value to a function that takes a base class parameter, object slicing occurs. This means that only the base class portion of the child object is copied, and any derived class-specific data or overridden methods are lost.
 
 ### 50. What happens if you call overridden virtual function from constructor? Can a constructor be virtual?
 
+No, constructor cannot be virtual. The reson is that constructors are responsible for creating an object, and virtual dispatch requires an already constructed object.
+
+If a base class constructor calls a virtual function, it does not call the overridden version in the derived class. Instead, it calls the base class's own version of the function.
+Reason: During the base class constructor execution, the derived class has not been fully constructod yet, so its version of the function is not available.
+
 ### 51. Can a pure virtual function have an implementation? What happens if you call a pure virtual function from a constructor?
+
+- A pure virtual function must be overridden in derived classes and makes the base class abstract, preventing direct instantiation.
+- Calling a pure virtual function inside a constructor can lead to underfined behaviour unless the base class provides an implementation
+- Constructors do not call overridden functions in derived classes because the derived class in not yet initialized.
 
 ### 52. What methods are generated for a class by default? In what case will such methods not be generated? How can I force the compiler to add/remove these methods?
 
 ### 53. How can I prevent a class from being inherited?
 
+To prevent a class from being inherited in C++, you can use the `final` specifier. When applied to a class, it ensures that the class cannot be used as a base class for futher inheritance.
+
 ### 54. What is the order of class construction and destruction in the hierarchu? The order of class field initialization?
+
+Base class constructor first: When an object of a derived class is created, the constructor of the base class is called first, followed by the constructors of any intermediate classes (if any), and then the constructor of the derived class.
+
+This ensures that the base class is properly initialized before the derived class starts initializing its members.
+
+Derived class destructor last: During object destruction, the derived class destructor is called first, followed by destructors of intermediate classes (if any), and finally the destructor of the base class.
+
+This order ensures that the derived class resources are cleaned up first before the base class resources.
 
 ### 55. What are the ways to initialize class fields?
 
+- Initialization List: Fields can be initialized directly in the constructor's initialization list, which is generally the preferred way, especially for constant members, references, or when performance is a concern.
+- Inside Constructor Body: Fields can also be initialized inside the constructor's body. However, this approach is not as efficient as the initialization list because the fields are first default-initialized and then assigned new values.
+- Default member initializations (Since C++11)
+- Static member initializations
+
 ### 56. Can a destructor be virtual?
+
+A destructor can be virtual in C++. In fact, it is highly recommended to make the destructor virtual in a base class when dealing with inheritance, especially if objects of derived classes might be deleted through pointers to base class objects. This ensures that the destructor of the derived class is called when an object is deleted, avoiding potential memory leaks or undefined behavior.
+
+When you use inheritance, if a base class pointer is used to delete an object of a derived class, the base class destructor will be called by default. This can lead to problems if the derived class has additional resources (e.g., dynamically allocated memory) that need to be cleaned up properly. A virtual destructor ensures that the appropriate destructor for the derived class is called, allowing proper cleanup of resources.
 
 ### 57. What does the virtual keyword do?
 
-### 58. What is a virtual destructor used for?
+The virtual keyword in C++ is used to declare functions that can be overridden in derived classes, enabling polymorphism. When a function is marked as virtual, the C++ compiler ensures that the correct function (derived class version) is called, even if the function is called through a pointer or reference to the base class.
 
-### 59. What is deep copying?
+### 58. How to protect an object from being copied?
 
-### 60. What are virtual functions and why are they needed?
+To prevent an object from being copied, you can delete or make the copy constructor and the copy assignment operator inaccessible. In C++11 and later, this can be achieved using the delete keyword.
 
-### 61. How to protect an object from being copied?
+### 59. What is move semantics?
 
-### 62. What is move semantics?
+Move semantics is a feature introduced in C++11 that allows resources (such as memory, file handles, etc) to be transferred from one object to another efficiently without copying the data. It enables moving rather than copying when temporary (r-value) are involved.
+
+In traditional copy semantics, when an object is copied, its data members are duplicated, which can be inefficient (especially for large objects). Move semantics avoid this overhead by transferring ownership of the resources from one object to another instead of copying them.
