@@ -948,23 +948,85 @@ An object is an instance of a class, meaning it is a real-word entity that holds
 
 ### 7. What are the standard class methods for a class?
 
+- Default Constructor
+- Copy Constructor
+- Move Constructor
+- Copy Assignment Operator
+- Move Assignment Operator
+- Destructor
+
 ### 8. What is an abstract class and what is it for?
+
+An abstract class is a class that cannot be instantiated directly. It serves as blueprint for other classes to derive from. An abstract class typically contains pure virtual functions (or virtual functions with no implementation) that must be implemented by its derived classes.
+
+Puerpose of an Abstract Class:
+
+- Define a common interface: It provides a common interface for all derived classes. Derived classes are required to implement the pure virtual functions.
+- Polymorphism: It allows you to work with different derived objects through a pointer or reference to the base class, enabling polymorphism. This is often used in desingning systens like frameworks, UI components, or plugin architerctures.
+- Prevent instantiations: Since an abstract class cannot be instantiated directly, it ensures that only derived classes with concrete implementations can be used.
 
 ### 9. How much memory does an object of an empty class A{}; take up?
 
+It takes 1 byte.
+
 ### 10. What happens to a function if you add the static keyword to it? In the context of a class member? In the context of a class method?
+
+When you add the `static` keyword to a member function in a class, it means that the function is not tied to a specific instance of the class. Instead, it is shared among all instances of the class. This function can be called without creating an object of the class.
+
+- Static member characteristics:
+  - It does not have access to the instance variables (non-static members) of the class, as it is not associated with a specific object.
+  - It can only access other static members (both data and functions) of the class.
+  - It can be called using the class name, like `ClassName::functionName()` or `ClassName::variableName`
 
 ### 11. What are the features of static class fields?
 
+- A static member variable is shared by all instances of the class. There is only one copy of the static field, regardless of how many objects are created from the class. Every object will access the same memory location for that variable.
+- A static field is initialized once when the program starts or when the class is first used, and it retains its value for the duration of the program.
+- It is not tied to any particular object. Even if no instances of the class are created, the static field still exists.
+- Static member variables can be accessed either via an instance of the class (though this is less common) or more commonly via the class name itself, e.g., ClassName::staticVariable.
+- Static variables are useful when you need to store information that is shared by all instances of the class. For example, a static variable could be used for counting the number of instances created for that class, or for storing a constant value that should remain the same for every object.
+- Static members can only access other static members of the class. They cannot access non-static members, because non-static members belong to a specific instance of the class.
+
 ### 12. What is the feature of constant class member methods?
+
+- Const Member Function: Declared with const at the end of the function, ensuring no modification of the object's state.
+- Const Objects: A const member function can be called on a const object, but it cannot modify any members of the object.
+- Read-Only Access: const member functions are often used for methods that only read or return values, ensuring no side effects occur.
 
 ### 13. How to change a class field in a constant class method?
 
+In C++, you cannot directly modify non-static class fields within a const member function because const methods guarantee that the object state will not change. However, there is a specific way to modify class fields inside a const method: using the mutable keyword.
+
+The mutable keyword allows you to specify that a particular member variable of the class can be modified even in a const member function. This is useful for scenarios where you want to allow internal state changes (like caching or counters) without modifying the external state of the object.
+
 ### 14. What methods can be called from constant objects?
+
+- A constant object can only call const member functions. These functions are guaranteed not to modify the state of the object. If you try to call a non-const method, the compiler will give an error because it might modify the object, which would violate the const contract.
+
+- Static member functions can be called on a constant object because they do not operate on the instance of the object, but rather on the class itself. Static methods do not require a specific object to be called and do not modify the object's state, so they are allowed.
 
 ### 15. What is a heap and a stack? Difference, operating principle
 
+Heap and Stack are two different regions of memory used for storig data during the execution of a program. They have different characteristics, operating principles, and use cases.
+
+Heap is a region of memory used for dynamic memory allocation. When you allocate memory using `new` or `malloc`, the memory is allocated from the heap. Memory from the heap is allocated during runtime, and the programmer is responsible for managing the memory. If memory is no longer needed, the programmer must be explicitly release it using `delete` or `free`.
+
+Stack is a region of memory used for storing local variables, function parameters, and return addresses. It operates in a last-in, first-out (LIFO) manner. Memory is automatically allocated and deallocated when a function is called or returns. When a function is called, its local variables are pushed onto the stack. When the function returns, the memory is automatically popped off the stack.
+
 ### 16. What is the difference between a pointer and a reference?
+
+- Defination
+  - Pointer: a variable that holds the address of another variable.
+  - Reference: an alias for an exisiting variable.
+- Nullability:
+  - Pointer: can be `nullptr`
+  - Reference: cannot be `null`: must refer to a valid object.
+- Reassignability:
+  - Pointer: can be reassigned to point to different addresses.
+  - Reference: cannot be changed to refer to a different variable.
+- Memory:
+  - Pointer: Takes memory to store the addres
+  - Reference: Takes no extra memory (just an alias).
 
 ### 17. What is a function pointer for? How to declare it?
 
