@@ -528,4 +528,21 @@ In short, a race condition happens when threads execute in an unpredictable orde
 
 ### 9. What is an atomic operation?
 
-### 10. How to work with std::mutex?
+An atomic operation is an operation that completes in a single step relative to other threads. It is guaranteed to be thread-safe, meaning that no other thread can observe the operation in an incomplete or inconsistent state. Atomic operations do not require locks and are usually supported by the hardware, ensuring that the operation happens as a single, indivisible action.
+
+Key Characteristics of Atomic Operations:
+
+- Indivisible: the operation cannot be interrupted by another thread. Once the operation starts, it will complete without any other thread being able to intervene.
+- Thread-Safe: multiple threads can perform atomic operations on the same data without causing race conditions.
+- Efficient: Atomic operations are typically faster than using locks (mutexes), as they avoid the overhead associated with acquiring and releasing locks.
+
+```cpp
+#include <atomic>
+std::atomic<int> x(0);
+
+// Atomic increment
+x.fetch_add(1);
+
+// Atomic compare-and-swap
+x.compare_exchange_strong(expected_value, new_value);
+```
