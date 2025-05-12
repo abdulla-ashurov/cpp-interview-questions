@@ -191,3 +191,133 @@ How to prevent memory leaks:
 - Use tools:
   - `Valgrind`: A popular tool for detecting memory leaks and other memory-related issues in C++ programs.
   - `Static Analysis`: Use tools like `Clang` or `GCC`'s static analysis tools to identify potential memory management problems.
+
+### 20. How does std::unique_ptr work?
+
+`std::unique_ptr` is a smart pointer in C++ that provides automatic, exclusive ownership of a dynamically allocated object. It ensures that the object it owns is deleted automatically when the `unique_ptr` goes out of scope, helping prevent memory leaks.
+
+```cpp
+#include <memory>
+#include <iostream>
+
+class MyClass {
+public:
+    MyClass() { std::cout << "MyClass created\n"; }
+    ~MyClass() { std::cout << "MyClass destroyed\n"; }
+};
+
+std::unique_ptr<MyClass> createObject() {
+    return std::make_unique<MyClass>();
+    // OR: return std::unique_ptr<MyClass>(new MyClass());
+}
+
+int main() {
+    std::unique_ptr<MyClass> obj = createObject();
+    // obj now owns the created object
+}
+```
+
+Key Properties:
+
+- It owns the object it points to
+- It cannot be copied (hence the name `unique`), only moved
+- When the `unique_ptr` is destroyed, it automatically calls `delete` (or `delete[]` for arrays).
+
+The standart library provides two distinct template specializations for `std::unique_ptr`:
+
+- Primary template for single objects:
+
+  ```cpp
+  template <typename T, typename Deleter = std::default_delete<T>>
+  class unique_ptr;
+  ```
+
+- Partial specialization for arrays:
+
+  ```cpp
+  template <typename T, typename Deleter>
+  class unique_ptr<T[], Deleter>;
+  ```
+
+### 21. How does std::shared_ptr work?
+
+`std::shared_ptr` is smart pointer that provides shared ownerships between `std::shared_ptr`. It automatically deletes the object when the last `shared_ptr` pointing to it is destroyed or reset.
+
+`std::shared_ptr` uses a separate control block (a reference counter structure) to track ownership.
+
+Key Concepts:
+
+- Reference Counting:
+  - When you copy a `shared_ptr`, the `use_count` increases.
+  - When a `shared_ptr` is destroyed or reset, the `use_count` decreases.
+  - When `use_count` reaches zero, the managed object is deleted
+
+- Weak Count:
+  - Tracks how many `std::weak_ptr` refer to the control block
+  - The control block is destroyed only when both `use_count` and `weak_count` are zero
+
+### 22. How does std::weak_ptr work?
+
+`std::weak_ptr` is a smart pointer that provides a non-owning reference to an object managed by `std::shared_ptr`. It primarily used to break `circular reference` and `safely observe` shared resources without affecting their lifetime.
+
+A cyclic reference problem happens when two or more `std::shared_ptr`s reference each other in a cycle, preventing their memory being freed - even when there are no external references.
+
+```cpp
+#include <iostream>
+#include <memory>
+
+struct B;  // Forward declaration
+
+struct A {
+    std::shared_ptr<B> b_ptr;
+    ~A() { std::cout << "A destroyed\n"; }
+};
+
+struct B {
+    std::shared_ptr<A> a_ptr;
+    ~B() { std::cout << "B destroyed\n"; }
+};
+
+int main() {
+    auto a = std::make_shared<A>();
+    auto b = std::make_shared<B>();
+
+    a->b_ptr = b;
+    b->a_ptr = a;
+
+    // Both a and b go out of scope here, but their reference counts never reach 0
+    // So destructors won't be called — MEMORY LEAK!
+}
+```
+
+What a Problem?
+
+- `a` holds a shared pointer to `b`
+- `b` holds a shared pointer to `a`
+- When `main()` ends, `a` and `b` go out of scope
+- But both have reference counts > 0, so they never get destroyed.
+
+```cpp
+struct B {
+    std::weak_ptr<A> a_ptr;  // Break the cycle!
+    ~B() { std::cout << "B destroyed\n"; }
+};
+```
+
+### 23. Explain the constancy of a variable, reference, pointer. What is a constant pointer and a pointer to a constant? The size of a pointer in memory?
+
+### 24. Explain the passing of arguments by value, by reference, and by pointer
+
+### 25. Explain the order of evalution of function arguments?
+
+### 26. What happens if you return a reference to a temporary object?
+
+### 27. What is function overloading? Types of overloading
+
+### 28. What is explicit and implicit type casting in C++? Explain the explicit type casting functions in C++
+
+### 29. What is variable initialization in if statement?
+
+### 30. What is lazy evaluatin C++?
+
+
